@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Υπόγεια Έργα</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d1b2a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Υπόγεια">
+  <style>
+    html, body {
+      margin: 0; height: 100%; background: #0d1b2a;
+      display: flex; align-items: center; justify-content: center;
+      font-family: system-ui, sans-serif;
+    }
+    .logo { color: #00c2d1; font-size: 4rem; font-weight: 700; letter-spacing: .05em; }
+    .sub  { color: #8da4b8; font-size: .9rem; margin-top: .5rem; text-align: center; }
+  </style>
+  <script src="config.js"></script>
+</head>
+<body>
+  <div>
+    <div class="logo">Υ</div>
+    <div class="sub">Υπόγεια Έργα</div>
+  </div>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js');
+    }
+    var qs = window.location.search;
+    window.location.replace(GAS_URL + (qs || ''));
+  </script>
+</body>
+</html>

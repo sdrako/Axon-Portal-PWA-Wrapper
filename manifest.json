@@ -1,0 +1,19 @@
+{
+  "name": "Υπόγεια Έργα",
+  "short_name": "Υπόγεια",
+  "description": "Field operations dashboard — underground cable/pipe construction",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#0d1b2a",
+  "theme_color": "#00c2d1",
+  "start_url": "./",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
