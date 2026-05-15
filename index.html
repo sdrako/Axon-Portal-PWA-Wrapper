@@ -11,27 +11,88 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Υπόγεια">
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
-      margin: 0; height: 100%; background: #0d1b2a;
+      height: 100%; background: #0d1b2a;
       display: flex; align-items: center; justify-content: center;
-      font-family: system-ui, sans-serif;
+      font-family: system-ui, sans-serif; color: #f0f4f8;
     }
-    .logo { color: #00c2d1; font-size: 4rem; font-weight: 700; letter-spacing: .05em; }
-    .sub  { color: #8da4b8; font-size: .9rem; margin-top: .5rem; text-align: center; }
+    .card {
+      text-align: center; padding: 2.5rem 2rem;
+      background: rgba(26,45,66,0.95); border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08); max-width: 320px; width: 90%;
+    }
+    .logo { color: #00c2d1; font-size: 5rem; font-weight: 700; line-height: 1; }
+    .title { font-size: 1.1rem; font-weight: 600; margin-top: .75rem; }
+    .sub { color: #8da4b8; font-size: .85rem; margin-top: .4rem; }
+    .btn {
+      display: block; width: 100%; margin-top: 1.75rem; padding: .75rem 1rem;
+      border: none; border-radius: 8px; font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: opacity .15s;
+    }
+    .btn:active { opacity: .8; }
+    .btn-install { background: #00c2d1; color: #0d1b2a; }
+    .btn-open    { background: transparent; color: #00c2d1;
+                   border: 1px solid #00c2d1; margin-top: .75rem; }
+    .hint { color: #5a7490; font-size: .78rem; margin-top: 1.25rem; line-height: 1.5; }
+    #btn-install { display: none; }
   </style>
   <script src="config.js"></script>
 </head>
 <body>
-  <div>
+  <div class="card">
     <div class="logo">Υ</div>
-    <div class="sub">Υπόγεια Έργα</div>
+    <div class="title">Υπόγεια Έργα</div>
+    <div class="sub">Field Operations Dashboard</div>
+
+    <button class="btn btn-install" id="btn-install">Εγκατάσταση</button>
+    <button class="btn btn-open"    id="btn-open">Άνοιγμα εφαρμογής</button>
+
+    <div class="hint" id="hint-ios" style="display:none">
+      Πατήστε <strong>Κοινοποίηση</strong> →
+      <strong>Προσθήκη στην Αρχική Οθόνη</strong>
+    </div>
   </div>
+
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js');
     }
-    var qs = window.location.search;
-    window.location.replace(GAS_URL + (qs || ''));
+
+    var extra = window.location.search.replace('?', '&');
+    var dest  = GAS_URL + '?p=undergroundv2' + extra;
+
+    // If already running as installed PWA — go straight to GAS
+    if (window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true) {
+      window.location.replace(dest);
+    }
+
+    // Capture Chrome/Android install prompt
+    var deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('btn-install').style.display = 'block';
+    });
+
+    document.getElementById('btn-install').addEventListener('click', function() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function() { deferredPrompt = null; });
+      }
+    });
+
+    document.getElementById('btn-open').addEventListener('click', function() {
+      window.location.replace(dest);
+    });
+
+    // Show iOS hint on Safari (no beforeinstallprompt support)
+    var isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    var isInStandalone = window.navigator.standalone === true;
+    if (isIos && !isInStandalone) {
+      document.getElementById('hint-ios').style.display = 'block';
+    }
   </script>
 </body>
 </html>
